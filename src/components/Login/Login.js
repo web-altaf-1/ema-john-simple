@@ -1,39 +1,42 @@
 import React, { useState } from 'react';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import auth from '../../firebase.init';
 import './Login.css';
 
 const Login = () => {
 
-    const [email,setEmail] = useState('');
-    const [password,setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-    const [signInWithEmailAndPassword ,
+    const location = useLocation();
+    const from = location.state?.from?.pathname || '/';
+
+    const [signInWithEmailAndPassword,
         user,
-        loading ,
+        loading,
         error] = useSignInWithEmailAndPassword(auth);
 
 
-    const handleEmailBlur = event =>{
+    const handleEmailBlur = event => {
         setEmail(event.target.value);
     }
-    const handlePasswordBlur = event =>{
+    const handlePasswordBlur = event => {
         setPassword(event.target.value);
     }
 
-    if(user){
-        navigate('/orders');
+    if (user) {
+        navigate(from ,{replace : true});
     }
 
-    const handleUserSignIn   = event =>{
+    const handleUserSignIn = event => {
         event.preventDefault();
-        signInWithEmailAndPassword(email,password);
+        signInWithEmailAndPassword(email, password);
     }
 
 
-    
+
 
 
     return (
@@ -47,9 +50,9 @@ const Login = () => {
                     </div>
                     <div className="input-group">
                         <label htmlFor="password">Password</label>
-                        <input onBlur={handlePasswordBlur} type="password" name="password" id="" required/>
+                        <input onBlur={handlePasswordBlur} type="password" name="password" id="" required />
                     </div>
-                    <p style={{color:'red'}}>{error?.message}</p>
+                    <p style={{ color: 'red' }}>{error?.message}</p>
                     {
                         loading && <p>Loading...</p>
                     }
@@ -58,7 +61,7 @@ const Login = () => {
                 <p>New to Ema-John ? <Link className='form-link' to='/signup'>Create an Account</Link> </p>
                 <div className='or-menu'>
                     <div className='hr-line'></div>
-                    <span style={{margin:"0 10px"}}>or</span>
+                    <span style={{ margin: "0 10px" }}>or</span>
                     <div className='hr-line'></div>
                 </div>
                 <button className='continue-with-google-button'> Continue with Google</button>
